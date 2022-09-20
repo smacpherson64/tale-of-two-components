@@ -1,0 +1,14 @@
+.h-screen {
+  height: -webkit-fill-available;
+}
+
+html {
+  height: -webkit-fill-available;
+  background: #111111;
+}
+
+input,
+textarea,
+select {
+  all: revert;
+}

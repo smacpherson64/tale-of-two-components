@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!-- Avoid flash of white on load -->
+<html lang="en" style="background: #111;">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+
+    <title>Tailwind CDN template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      function createScopedGroup(groupName, customClassVariants = []) {
+        let pseudoVariants = [
+          // Positional
+          ["first", ":first-child"],
+          ["last", ":last-child"],
+          ["only", ":only-child"],
+          ["odd", ":nth-child(odd)"],
+          ["even", ":nth-child(even)"],
+          "first-of-type",
+          "last-of-type",
+          "only-of-type",
+
+          // State
+          "visited",
+          "target",
+          ["open", "[open]"],
+
+          // Forms
+          "default",
+          "checked",
+          "indeterminate",
+          "placeholder-shown",
+          "autofill",
+          "required",
+          "valid",
+          "invalid",
+          "in-range",
+          "out-of-range",
+          "read-only",
+
+          // Content
+          "empty",
+
+          // Interactive
+          "focus-within",
+          "hover",
+          "focus",
+          "focus-visible",
+          "active",
+          "disabled"
+        ].map((variant) =>
+          Array.isArray(variant) ? variant : [variant, `:${variant}`]
+        );
+
+        const customVariants = customClassVariants.map((variant) =>
+          Array.isArray(variant) ? variant : [variant, `.${variant}`]
+        );
+
+        // Huge shoutout to Linus Benkner for making the plugin below. Thank you.
+        // https://linu.us/how-to-nest-groups-in-tailwindcss
+        // https://github.com/EinLinuus/tailwindcss-scoped-groups/blob/main/src/index.js
+        return ({ addVariant }) => {
+          pseudoVariants.forEach(([variantName, state]) => {
+            // * New addVariant API (TailwindCSS 3.x)
+            addVariant(`${groupName}-${variantName}`, [
+              `:merge(.${groupName})${state} > &`,
+              `:merge(.${groupName})${state} *:not(.${groupName}) &`
+            ]);
+          });
+
+          customVariants.forEach(([variantName, state]) => {
+            // * New addVariant API (TailwindCSS 3.x)
+            addVariant(`${groupName}-${variantName}`, [
+              `:merge(.${groupName})${state} > &`,
+              `:merge(.${groupName})${state} *:not(.${groupName}) &`
+            ]);
+          });
+        };
+      }
+
+      tailwind.config = {
+        plugins: [
+          tailwind.plugin(createScopedGroup("field", ["changed", "blurred"])),
+          tailwind.plugin(createScopedGroup("form", ["submitted"]))
+        ]
+      };
+    </script>
+  </head>
+
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+  </body>
+</html>
