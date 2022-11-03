@@ -103,7 +103,6 @@ class ExampleResourceCache {
   };
 
   // This is a custom hook used to work with the cache
-  /* eslint-disable react-hooks/rules-of-hooks */
   usePromiseResource = ({ key, cache }) => {
     const _this = this;
     const [resource, setResource] = React.useState(_this.cache(key, cache));

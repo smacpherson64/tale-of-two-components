@@ -48,7 +48,7 @@ import HooksView from "./Hooks";
  *
  * Go ahead and jump into ./Hooks/index.js
  */
-export function App() {
+export default function App() {
   return (
     <main className="bg-gray-600 text-white flex flex-col sm:flex-row w-full min-h-screen items-stretch">
       <div className="bg-teal-300 text-teal-900 w-full flex-1 flex relative p-6">

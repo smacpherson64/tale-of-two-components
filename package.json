@@ -4,20 +4,21 @@
   "description": "",
   "keywords": [],
   "main": "src/index.js",
+  "homepage": "https://smacpherson64.github.io/tale-of-two-components",
   "dependencies": {
-    "@testing-library/react": "13.3.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "@testing-library/react": "13.4.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-error-boundary": "3.1.4",
-    "react-scripts": "4.0.0"
+    "react-scripts": "5.0.1"
   },
   "devDependencies": {
-    "@babel/runtime": "7.13.8",
-    "typescript": "4.1.3"
+    "@babel/runtime": "7.20.1",
+    "typescript": "4.8.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && mv ./build ./docs",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
