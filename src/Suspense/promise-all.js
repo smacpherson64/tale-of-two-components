@@ -1,10 +1,10 @@
-import * as React from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { getAccounts, getShipments, getUser } from "../fetch-data";
-import { usePromiseResource, PromiseResource } from "./PromiseResource";
+import * as React from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
+import {getAccounts, getShipments, getUser} from '../fetch-data'
+import {usePromiseResource, PromiseResource} from './PromiseResource'
 
 // Starting to get the user immediately before rendering
-const initialUserResource = new PromiseResource(getUser());
+const initialUserResource = new PromiseResource(getUser())
 
 /**
  * # Welcome to the Suspense Component
@@ -25,61 +25,63 @@ const initialUserResource = new PromiseResource(getUser());
  * shipments happens inside of the component is more waterfall.
  */
 export const Root = () => {
-  const [userResource] = React.useState(initialUserResource);
+  const [userResource] = React.useState(initialUserResource)
 
   const accountsResource = React.useMemo(
     () =>
       new PromiseResource(
         // We use the user promise and wait for the data to resolve
         // then use that to make the accounts request.
-        userResource.promise.then((user) => getAccounts({ userId: user.id }))
+        userResource.promise.then((user) => getAccounts({userId: user.id})),
       ),
-    [userResource]
-  );
+    [userResource],
+  )
 
   const shipmentsResource = React.useMemo(
     () =>
       new PromiseResource(
         // We use the accounts promise and wait for the data to resolve
         // then use that to make the shipments request.
-        accountsResource.promise.then(({ accounts }) => {
-          const primaryAccount = accounts?.[0];
+        accountsResource.promise.then(({accounts}) => {
+          const primaryAccount = accounts?.[0]
 
           if (!primaryAccount) {
-            return { shipments: [] };
+            return {shipments: []}
           }
 
-          return getShipments({ accountId: primaryAccount.id });
-        })
+          return getShipments({accountId: primaryAccount.id})
+        }),
       ),
-    [accountsResource]
-  );
+    [accountsResource],
+  )
 
   // Here we split data gathering from presentation:
   // Root knows how the data is gathered but not presented
   // Root.SuspendingView knows how the data is presented but not gathered.
 
   return (
-    <Root.SupendingView
-      userResource={userResource}
-      accountsResource={accountsResource}
-      shipmentsResource={shipmentsResource}
-    />
-  );
-};
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <Root.SupendingView
+        userResource={userResource}
+        accountsResource={accountsResource}
+        shipmentsResource={shipmentsResource}
+      />
+    </React.Suspense>
+  )
+}
 
 Root.SupendingView = function RootSuspendingView({
   userResource,
   accountsResource,
-  shipmentsResource
+  shipmentsResource,
 }) {
   // Render 1: throw promise
   // Render 2: all data is ready
-  const [user, { accounts }, { shipments }] = usePromiseResource(
+  const [user, {accounts}, {shipments}] = usePromiseResource(
     userResource,
     accountsResource,
-    shipmentsResource
-  );
+    shipmentsResource,
+  )
 
   return (
     <div>
@@ -92,26 +94,24 @@ Root.SupendingView = function RootSuspendingView({
             {shipments.map((shipment) => {
               return (
                 <li key={shipment.id}>
-                  <span className="font-bold">{shipment.id}:</span> from{" "}
+                  <span className="font-bold">{shipment.id}:</span> from{' '}
                   {shipment.from} to {shipment.to}
                 </li>
-              );
+              )
             })}
           </ol>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default function SuspenseView() {
   return (
     <div className="flex w-full flex-1 items-center justify-center">
       <ErrorBoundary fallback={<div>Oh Snap!</div>}>
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <Root />
-        </React.Suspense>
+        <Root />
       </ErrorBoundary>
     </div>
-  );
+  )
 }

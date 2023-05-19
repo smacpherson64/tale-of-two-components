@@ -1,10 +1,10 @@
-import * as React from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { getAccounts, getShipments, getUser } from "../fetch-data";
-import { usePromiseResource, PromiseResource } from "./PromiseResource";
+import * as React from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
+import {getAccounts, getShipments, getUser} from '../fetch-data'
+import {usePromiseResource, PromiseResource} from './PromiseResource'
 
 // Starting to get the user immediately before rendering
-const initialUserResource = new PromiseResource(getUser());
+const initialUserResource = new PromiseResource(getUser())
 
 /**
  * # Welcome to the separate loading states example
@@ -13,9 +13,9 @@ const initialUserResource = new PromiseResource(getUser());
  * The main goal of this component is to show handling different loading states using promises.
  */
 export const Root = () => {
-  const [loadingMessage, setLoadingMessage] = React.useState("Loading user...");
+  const [loadingMessage, setLoadingMessage] = React.useState('Loading user...')
 
-  const [userResource] = React.useState(initialUserResource);
+  const [userResource] = React.useState(initialUserResource)
 
   const accountsResource = React.useMemo(
     () =>
@@ -23,12 +23,12 @@ export const Root = () => {
         // We use the user promise and wait for the data to resolve
         // then use that to make the accounts request.
         userResource.promise.then((user) => {
-          setLoadingMessage("Loading accounts...");
-          return getAccounts({ userId: user.id });
-        })
+          setLoadingMessage('Loading accounts...')
+          return getAccounts({userId: user.id})
+        }),
       ),
-    [userResource]
-  );
+    [userResource],
+  )
 
   const shipmentsResource = React.useMemo(
     () =>
@@ -36,21 +36,21 @@ export const Root = () => {
         // We use the accounts promise and wait for the data to resolve
         // then use that to make the shipments request.
         accountsResource.promise
-          .then(({ accounts }) => {
-            const primaryAccount = accounts?.[0];
+          .then(({accounts}) => {
+            const primaryAccount = accounts?.[0]
 
             if (!primaryAccount) {
-              return { shipments: [] };
+              return {shipments: []}
             }
 
-            setLoadingMessage("Loading shipments...");
+            setLoadingMessage('Loading shipments...')
 
-            return getShipments({ accountId: primaryAccount.id });
+            return getShipments({accountId: primaryAccount.id})
           })
-          .finally(() => setLoadingMessage(""))
+          .finally(() => setLoadingMessage('')),
       ),
-    [accountsResource]
-  );
+    [accountsResource],
+  )
 
   // Here we split data gathering from presentation:
   // Root knows how the data is gathered but not presented
@@ -58,21 +58,20 @@ export const Root = () => {
 
   return (
     <React.Suspense
-      fallback={<div>{loadingMessage ? loadingMessage : "Loading..."}</div>}
-    >
+      fallback={<div>{loadingMessage ? loadingMessage : 'Loading...'}</div>}>
       <Root.SupendingView
         userResource={userResource}
         accountsResource={accountsResource}
         shipmentsResource={shipmentsResource}
       />
     </React.Suspense>
-  );
-};
+  )
+}
 
 Root.SupendingView = function RootSuspendingView({
   userResource,
   accountsResource,
-  shipmentsResource
+  shipmentsResource,
 }) {
   // React handles the loading and render states:
   // if the promise is not done, it throws and waits for that promise
@@ -84,18 +83,18 @@ Root.SupendingView = function RootSuspendingView({
   // Render 1: The data is still loading, throw
   // Render 2: The data is returned
   // Render 3: The data is returned
-  const user = usePromiseResource(userResource);
+  const user = usePromiseResource(userResource)
 
   // Render 1: not reached - rendering stopped
   // Render 2: the data is loading, throw
   // Render 3: the data is returned
-  const { accounts } = usePromiseResource(accountsResource);
+  const {accounts} = usePromiseResource(accountsResource)
 
   // Render 1: not reached - rendering stopped
   // Render 2: not reached - rendering stopped
   // Render 3: the data is loading, throw
   // Render 4: the data is returned
-  const { shipments } = usePromiseResource(shipmentsResource);
+  const {shipments} = usePromiseResource(shipmentsResource)
 
   // The renders here are intentionally similar to the hook components. The differences are:
   // 1. The data is guarenteed to exist, we are always in the happy path
@@ -114,17 +113,17 @@ Root.SupendingView = function RootSuspendingView({
             {shipments.map((shipment) => {
               return (
                 <li key={shipment.id}>
-                  <span className="font-bold">{shipment.id}:</span> from{" "}
+                  <span className="font-bold">{shipment.id}:</span> from{' '}
                   {shipment.from} to {shipment.to}
                 </li>
-              );
+              )
             })}
           </ol>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default function SuspenseView() {
   return (
@@ -133,5 +132,5 @@ export default function SuspenseView() {
         <Root />
       </ErrorBoundary>
     </div>
-  );
+  )
 }

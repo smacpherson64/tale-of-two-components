@@ -1,10 +1,10 @@
-import * as React from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { getAccounts, getShipments, getUser } from "../fetch-data";
-import { PromiseResource, ResourceCache } from "./PromiseResource";
+import * as React from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
+import {getAccounts, getShipments, getUser} from '../fetch-data'
+import {PromiseResource, ResourceCache} from './PromiseResource'
 
 // Starting to get the user immediately before rendering
-const initialUserResource = new PromiseResource(getUser());
+const initialUserResource = new PromiseResource(getUser())
 
 /**
  * # Welcome to the Nieve cache version
@@ -36,35 +36,35 @@ export function Root() {
   // Render 2: The data is returned
   // Render 3: The data is returned
   const user = ResourceCache.usePromiseResource({
-    key: "userResource",
-    cache: () => initialUserResource
-  });
+    key: 'userResource',
+    cache: () => initialUserResource,
+  })
 
   // Render 1: not reached - rendering stopped
   // Render 2: the data is loading, throw
   // Render 3: the data is returned
-  const { accounts } = ResourceCache.usePromiseResource({
-    key: "accountsResource",
-    cache: () => new PromiseResource(getAccounts({ userId: user.id }))
-  });
+  const {accounts} = ResourceCache.usePromiseResource({
+    key: 'accountsResource',
+    cache: () => new PromiseResource(getAccounts({userId: user.id})),
+  })
 
   // Render 1: not reached - rendering stopped
   // Render 2: not reached - rendering stopped
   // Render 3: the data is loading, throw
   // Render 4: the data is returned
-  const { shipments } = ResourceCache.usePromiseResource({
-    key: "shipmentsResource",
+  const {shipments} = ResourceCache.usePromiseResource({
+    key: 'shipmentsResource',
     cache: () => {
-      const primaryAccount = accounts?.[0];
+      const primaryAccount = accounts?.[0]
 
       return primaryAccount
-        ? new PromiseResource(getShipments({ accountId: primaryAccount.id }))
-        : PromiseResource.resolve({ shipments: [] });
-    }
-  });
+        ? new PromiseResource(getShipments({accountId: primaryAccount.id}))
+        : PromiseResource.resolve({shipments: []})
+    },
+  })
 
   // The renders here are intentionally similar to the hook components. The differences are:
-  // 1. The data is guarenteed to exist, we are always in the happy path
+  // 1. The data is guaranteed to exist, we are always in the happy path
   // 2. The loading state is handled by React internally (it will throw and stop rendering)
   // 3. The error states are handled error boundaries
   // 4. We have less constraints around hooks, we did not need to return to keep in the happy path.
@@ -80,16 +80,16 @@ export function Root() {
             {shipments.map((shipment) => {
               return (
                 <li key={shipment.id}>
-                  <span className="font-bold">{shipment.id}:</span> from{" "}
+                  <span className="font-bold">{shipment.id}:</span> from{' '}
                   {shipment.from} to {shipment.to}
                 </li>
-              );
+              )
             })}
           </ol>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default function SuspenseView() {
@@ -101,5 +101,5 @@ export default function SuspenseView() {
         </React.Suspense>
       </ErrorBoundary>
     </div>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import * as React from "react";
-import "./styles.css";
+import * as React from 'react'
+import './styles.css'
 
 // Example using React state as cache
-import SuspenseView from "./Suspense";
+import SuspenseView from './Suspense/promise-all'
 
 // Example using React state as cache (multiple resources at once)
 // import SuspenseView from "./Suspense/promise-all";
@@ -13,7 +13,7 @@ import SuspenseView from "./Suspense";
 // Example using different loading messages
 // import SuspenseView from "./Suspense/loading-states";
 
-import HooksView from "./Hooks";
+import HooksView from './Hooks'
 
 /**
  * # Welcome to the Tale of two components
@@ -64,5 +64,5 @@ export default function App() {
         <SuspenseView />
       </div>
     </main>
-  );
+  )
 }

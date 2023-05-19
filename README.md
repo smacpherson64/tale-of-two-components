@@ -2,7 +2,9 @@
 
 The concept shows how a "PromiseResource" can be used in various ways in comparison to hooks.
 
-Issue: React 18.2 seems to shift where the rerendering occurs from in Suspense. Before 18.2 the re-rendering would start at the component that threw, now it seems to start at a Suspense boundary.
+## Update React 18.2 suspense change
+
+React 18.2 shifts where the re-rendering occurs in Suspense. Before 18.2 the re-renders only the component that threw, now the re-render starts at the Suspense boundary.
 
 **url**
 https://smacpherson64.github.io/tale-of-two-components
