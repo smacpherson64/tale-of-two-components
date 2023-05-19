@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tale-of-two-components/static/css/main.f7524b1b.css",
+    "main.js": "/tale-of-two-components/static/js/main.cfcf60d3.js",
+    "index.html": "/tale-of-two-components/index.html",
+    "main.f7524b1b.css.map": "/tale-of-two-components/static/css/main.f7524b1b.css.map",
+    "main.cfcf60d3.js.map": "/tale-of-two-components/static/js/main.cfcf60d3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f7524b1b.css",
+    "static/js/main.cfcf60d3.js"
+  ]
+}
