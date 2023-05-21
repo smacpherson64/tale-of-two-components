@@ -1,10 +1,40 @@
 import * as React from 'react'
 import {ErrorBoundary} from 'react-error-boundary'
 import {getAccounts, getShipments, getUser} from '../fetch-data'
-import {PromiseResource, ResourceCache} from './PromiseResource'
+import {
+  usePromiseResource,
+  PromiseResource,
+  ResourceCache,
+} from './PromiseResource'
 
-// Starting to get the user immediately before rendering
-const initialUserResource = new PromiseResource(getUser())
+// This is an example of preloading the data, since none of the data
+// requires knowing any outside information.
+const userResource = ResourceCache.set({
+  key: 'userResource',
+  resource: new PromiseResource(getUser()),
+})
+const accountsResource = ResourceCache.set({
+  key: 'accountsResource',
+  resource: new PromiseResource(
+    userResource.promise.then((user) => getAccounts({userId: user.id})),
+  ),
+})
+ResourceCache.set({
+  key: 'shipmentsResource',
+  resource: new PromiseResource(
+    // We use the accounts promise and wait for the data to resolve
+    // then use that to make the shipments request.
+    accountsResource.promise.then(({accounts}) => {
+      const primaryAccount = accounts?.[0]
+
+      if (!primaryAccount) {
+        return {shipments: []}
+      }
+
+      return getShipments({accountId: primaryAccount.id})
+    }),
+  ),
+})
 
 /**
  * # Welcome to the naive cache version
@@ -34,34 +64,11 @@ export function Root() {
 
   // Render 1: The data is still loading, throw
   // Render 2: The data is returned
-  // Render 3: The data is returned
-  const user = ResourceCache.usePromiseResource({
-    key: 'userResource',
-    cache: () => initialUserResource,
-  })
-
-  // Render 1: not reached - rendering stopped
-  // Render 2: the data is loading, throw
-  // Render 3: the data is returned
-  const {accounts} = ResourceCache.usePromiseResource({
-    key: 'accountsResource',
-    cache: () => new PromiseResource(getAccounts({userId: user.id})),
-  })
-
-  // Render 1: not reached - rendering stopped
-  // Render 2: not reached - rendering stopped
-  // Render 3: the data is loading, throw
-  // Render 4: the data is returned
-  const {shipments} = ResourceCache.usePromiseResource({
-    key: 'shipmentsResource',
-    cache: () => {
-      const primaryAccount = accounts?.[0]
-
-      return primaryAccount
-        ? new PromiseResource(getShipments({accountId: primaryAccount.id}))
-        : PromiseResource.resolve({shipments: []})
-    },
-  })
+  const [user, {accounts}, {shipments}] = usePromiseResource(
+    ResourceCache.get('userResource'),
+    ResourceCache.get('accountsResource'),
+    ResourceCache.get('shipmentsResource'),
+  )
 
   // The renders here are intentionally similar to the hook components. The differences are:
   // 1. The data is guaranteed to exist, we are always in the happy path

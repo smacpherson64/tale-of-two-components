@@ -7,13 +7,13 @@ import {usePromiseResource, PromiseResource} from './PromiseResource'
 const initialUserResource = new PromiseResource(getUser())
 
 /**
- * # Welcome to the Suspense Component
+ * # Welcome to the promise all suspense version
  *
  * > **BEFORE STARTING READ THIS:**
  * > Suspense is awesome, but it does not replace the need for hooks. **Again, hooks are not bad**.
  *
  * The main focus is on the Root component. This component uses suspense based fetchers to retrieve data
- * and show it on the screen. This compeonent splits gathering data and presenting data.
+ * and show it on the screen. This component splits gathering data and presenting data.
  *
  * There are three levels of data needed to show the data on the screen:
  * - user

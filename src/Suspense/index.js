@@ -7,20 +7,18 @@ import {usePromiseResource, PromiseResource} from './PromiseResource'
 const initialUserResource = new PromiseResource(getUser())
 
 /**
- * # Welcome to the Suspense Component
- *
- * > **BEFORE STARTING READ THIS:**
- * > Suspense is awesome, but it does not replace the need for hooks. **Again, hooks are not bad**.
+ * # Welcome to the default suspense example
  *
  * The main focus is on the Root component. This component uses suspense based fetchers to retrieve data
- * and show it on the screen. This compeonent splits gathering data and presenting data.
+ * and show it on the screen. This component splits gathering data and presenting data. Note because of
+ * updates to react (18.2) the loading must now be connected to the root.
  *
  * There are three levels of data needed to show the data on the screen:
  * - user
  * - account (requires user.id)
  * - shipments (requires account.id)
  *
- * We wrap the direct api calls in a promise resource, these are aimed to be realistic.
+ * We wrap the direct api calls in a PromiseResource, these are aimed to be realistic.
  * Loading the user starts before rendering (or while rendering). Loading accounts and
  * shipments happens inside of the component is more waterfall.
  */
