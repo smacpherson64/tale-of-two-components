@@ -36,6 +36,19 @@ export class PromiseResource {
     resource.error = value
     return resource
   }
+
+  /**
+   * Converts a PromiseResource into a promise
+   */
+  static async toPromise(resource) {
+    await resource.promise
+
+    if (resource.error) {
+      throw resource.error
+    }
+
+    return resource.value
+  }
 }
 
 /**
